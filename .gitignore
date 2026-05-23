@@ -14,7 +14,6 @@ data/raw/
 data/processed/
 
 # Results dan output
-results/metrics/
 results/reports/
 
 # Python

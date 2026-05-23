@@ -34,9 +34,8 @@ def evaluate(model_path: str | None = None):
     print("Memuat dataset test (InstaDeepAI ClinVar)...")
     raw = load_dataset(
         "InstaDeepAI/genomics-long-range-benchmark",
-        task_name="variant_effect_pathogenic_clinvar",
+        "variant_effect_pathogenic_clinvar",
         sequence_length=MAX_SEQ_LENGTH,
-        trust_remote_code=True,
     )
     test_data = raw["test"].shuffle(seed=42).select(range(min(TEST_SIZE, len(raw["test"]))))
     test_ds = DNAVariantDataset(test_data, DNABERT_MODEL, MAX_SEQ_LENGTH)
