@@ -3,7 +3,7 @@
 .env.local
 
 # Model checkpoints (terlalu besar untuk di-push)
-models/
+/models/
 *.pt
 *.pth
 *.bin
