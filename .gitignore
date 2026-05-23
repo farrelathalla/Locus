@@ -1,0 +1,39 @@
+# Environment
+.env
+.env.local
+
+# Model checkpoints (terlalu besar untuk di-push)
+models/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Dataset mentah
+data/raw/
+data/processed/
+
+# Results dan output
+results/metrics/
+results/reports/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Notebook output
+notebooks/.ipynb_checkpoints/
+
+# Next.js
+web/.next/
+web/node_modules/
+web/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
