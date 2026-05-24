@@ -11,7 +11,7 @@ def sequence_analyst_agent(state: AnalysisState) -> AnalysisState:
     context = seq[start:end].upper()
 
     gc_content = compute_gc_content(context)
-    mutation_type = _identify_mutation_type(seq, pos)
+    mutation_type = _identify_mutation_type(seq, state.get("ref_sequence"), pos)
     genomic_region = _estimate_genomic_region(pos)
     nearby_motifs = find_regulatory_motifs(context)
 
@@ -26,15 +26,22 @@ def sequence_analyst_agent(state: AnalysisState) -> AnalysisState:
     return state
 
 
-def _identify_mutation_type(seq: str, pos: int) -> str:
-    if pos >= len(seq):
+def _identify_mutation_type(alt_seq: str, ref_seq: str | None, pos: int) -> str:
+    if not ref_seq or pos >= len(alt_seq) or pos >= len(ref_seq):
         return "unknown"
 
-    base = seq[pos].upper() if pos < len(seq) else "N"
+    alt_base = alt_seq[pos].upper()
+    ref_base = ref_seq[pos].upper()
 
     transitions = {("A", "G"), ("G", "A"), ("C", "T"), ("T", "C")}
     transversions = {("A", "C"), ("A", "T"), ("G", "C"), ("G", "T"),
                      ("C", "A"), ("C", "G"), ("T", "A"), ("T", "G")}
+
+    mut_pair = (ref_base, alt_base)
+    if mut_pair in transitions:
+        return "transition"
+    elif mut_pair in transversions:
+        return "transversion"
 
     return "missense_variant"
 
