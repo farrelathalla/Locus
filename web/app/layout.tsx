@@ -7,13 +7,20 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "DNA Pathogenicity Analyzer",
-  description: "Analisis patogenisitas varian DNA berbasis DNABERT-2 dan sistem multi-agent LLM",
+  description:
+    "Analisis patogenisitas varian DNA berbasis DNABERT-2 dan sistem multi-agent LLM",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="id">
-      <body className={`${inter.className} min-h-screen bg-background antialiased`}>
+      <body
+        className={`${inter.className} min-h-screen bg-background antialiased`}
+      >
         <header className="border-b border-border bg-card">
           <div className="mx-auto max-w-6xl px-6 py-4">
             <div className="flex items-center justify-between">
@@ -32,7 +39,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
         <footer className="border-t border-border mt-16">
           <div className="mx-auto max-w-6xl px-6 py-4 text-xs text-muted-foreground">
-            IF3211 Domain-Specific Computation — Hanya untuk keperluan penelitian dan edukasi.
+            IF3211 Domain-Specific Computation — Hanya untuk keperluan
+            penelitian dan edukasi.
           </div>
         </footer>
       </body>

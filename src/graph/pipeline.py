@@ -31,13 +31,11 @@ def run_full_pipeline(
     ml_confidence: float,
     ml_probabilities: dict,
     gene_name: str | None = None,
-    ref_sequence: str | None = None,
 ) -> dict:
     pipeline = build_pipeline()
 
     initial_state: AnalysisState = {
         "dna_sequence": dna_sequence,
-        "ref_sequence": ref_sequence,
         "mutation_position": mutation_position,
         "gene_name": gene_name,
         "ml_label": ml_label,

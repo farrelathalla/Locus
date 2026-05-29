@@ -154,7 +154,6 @@ def analyze(req: AnalyzeRequest):
             ml_confidence=ml_result["confidence"],
             ml_probabilities=ml_result["probabilities"],
             gene_name=req.gene_name,
-            ref_sequence=req.ref_sequence,
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Pipeline gagal: {exc}")

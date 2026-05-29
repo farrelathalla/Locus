@@ -3,7 +3,6 @@ from typing import TypedDict, List, Optional, Dict, Any
 
 class AnalysisState(TypedDict):
     dna_sequence: str
-    ref_sequence: Optional[str]
     mutation_position: int
     gene_name: Optional[str]
 

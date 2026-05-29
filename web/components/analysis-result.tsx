@@ -41,13 +41,28 @@ export function AnalysisResult({ data }: Props) {
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold">Hasil Klasifikasi ML</CardTitle>
+        <CardTitle className="text-sm font-semibold">
+          Hasil Klasifikasi ML
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center gap-3">
-          <span className={`h-2.5 w-2.5 flex-none rounded-full ${labelIndicator(ml_prediction.label)}`} />
-          <span className="text-sm font-medium">{labelId(ml_prediction.label)}</span>
-          <Badge variant={labelVariant(ml_prediction.label) as "pathogenic" | "benign" | "vus"}>
+          <span
+            className={`h-2.5 w-2.5 flex-none rounded-full ${labelIndicator(
+              ml_prediction.label
+            )}`}
+          />
+          <span className="text-sm font-medium">
+            {labelId(ml_prediction.label)}
+          </span>
+          <Badge
+            variant={
+              labelVariant(ml_prediction.label) as
+                | "pathogenic"
+                | "benign"
+                | "vus"
+            }
+          >
             {ml_prediction.label}
           </Badge>
         </div>
@@ -71,9 +86,14 @@ export function AnalysisResult({ data }: Props) {
           </p>
           <div className="grid grid-cols-3 gap-2">
             {Object.entries(ml_prediction.probabilities).map(([cls, prob]) => (
-              <div key={cls} className="rounded-md border border-border bg-muted/40 p-2 text-center">
+              <div
+                key={cls}
+                className="rounded-md border border-border bg-muted/40 p-2 text-center"
+              >
                 <p className="text-[10px] text-muted-foreground">{cls}</p>
-                <p className="text-sm font-semibold tabular-nums">{(prob * 100).toFixed(1)}%</p>
+                <p className="text-sm font-semibold tabular-nums">
+                  {(prob * 100).toFixed(1)}%
+                </p>
               </div>
             ))}
           </div>
@@ -83,15 +103,21 @@ export function AnalysisResult({ data }: Props) {
           <>
             <Separator />
             <div className="rounded-md bg-muted/50 px-3 py-2.5">
-              <p className="text-xs font-medium text-muted-foreground mb-1">Catatan Supervisor</p>
-              <p className="text-xs text-foreground leading-relaxed">{data.supervisor_note}</p>
+              <p className="text-xs font-medium text-muted-foreground mb-1">
+                Catatan Supervisor
+              </p>
+              <p className="text-xs text-foreground leading-relaxed">
+                {data.supervisor_note}
+              </p>
             </div>
           </>
         )}
 
         {data.errors.length > 0 && (
           <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5">
-            <p className="text-xs font-medium text-amber-700 mb-1">Peringatan Pipeline</p>
+            <p className="text-xs font-medium text-amber-700 mb-1">
+              Peringatan Pipeline
+            </p>
             {data.errors.map((e, i) => (
               <p key={i} className="text-xs text-amber-600">
                 {e}

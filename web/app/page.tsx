@@ -43,9 +43,12 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <div className="max-w-2xl">
-        <h2 className="text-lg font-semibold tracking-tight text-foreground">Analisis Patogenisitas Varian</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">
+          Analisis Patogenisitas Varian
+        </h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Masukkan sekuens DNA dan posisi mutasi untuk mendapatkan klasifikasi otomatis dan laporan klinis berbasis AI.
+          Masukkan sekuens DNA dan posisi mutasi untuk mendapatkan klasifikasi
+          otomatis dan laporan klinis berbasis AI.
         </p>
       </div>
 
@@ -102,7 +105,9 @@ export default function Home() {
               {result.sequence_analysis ? (
                 <SequenceAnalysisPanel data={result.sequence_analysis} />
               ) : (
-                <p className="text-sm text-muted-foreground">Data analisis sekuens tidak tersedia.</p>
+                <p className="text-sm text-muted-foreground">
+                  Data analisis sekuens tidak tersedia.
+                </p>
               )}
             </TabsContent>
 
@@ -118,7 +123,9 @@ export default function Home() {
               {result.final_report ? (
                 <ClinicalReport report={result.final_report} result={result} />
               ) : (
-                <p className="text-sm text-muted-foreground">Laporan klinis tidak tersedia.</p>
+                <p className="text-sm text-muted-foreground">
+                  Laporan klinis tidak tersedia.
+                </p>
               )}
             </TabsContent>
           </Tabs>
