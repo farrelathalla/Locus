@@ -4,6 +4,12 @@ Sistem end-to-end untuk mengklasifikasi patogenisitas varian DNA menggunakan gen
 
 Dibangun untuk mata kuliah **IF3211 Domain-Specific Computation**, Institut Teknologi Bandung.
 
+| NIM | Nama | Kontribusi |
+| --- | ---- | ---------- |
+| 13523062 | Aliya Husna Fayyaza | ML model, training pipeline, evaluasi, koordinasi |
+| 13523113 | Kefas Kurnia Jonathan | Backend fixes, LangGraph pipeline, FastAPI |
+| 13523118 | Farrel Athalla Putra | System ideation and design, frontend, integration testing, PDF export |
+
 ---
 
 ## Gambaran Sistem
@@ -21,7 +27,7 @@ Input: Sekuens ALT (dengan mutasi) + Sekuens REF (referensi) + posisi mutasi
          /           \
    mean_pool(alt)  mean_pool(ref)
          \           /
-    concat[alt || ref || (alt-ref)]  ← 2304-dim
+       diff_emb = alt - ref  ← 768-dim
               |
     Classification Head → Benign / Pathogenic + confidence
               |
@@ -99,7 +105,7 @@ cd web && npm install && cd ..
 
 ## Menjalankan Aplikasi
 
-### Windows — cara cepat
+### Windows
 
 Dua pilihan script tersedia tergantung bagaimana Python terinstall:
 
@@ -120,7 +126,7 @@ Kedua script membuka dua terminal: API server (port 8000) dan web server (port 3
 
 ### Manual
 
-> **Penting — PYTHONPATH:** uvicorn menggunakan `multiprocessing.spawn` di Windows untuk mode `--reload`, yang memulai subprocess baru tanpa mewarisi working directory. Tanpa `PYTHONPATH`, subprocess tidak bisa menemukan modul `api` dan akan crash dengan `ModuleNotFoundError: No module named 'api'`. Selalu set `PYTHONPATH` sebelum menjalankan uvicorn secara manual.
+> **PYTHONPATH:** uvicorn menggunakan `multiprocessing.spawn` di Windows untuk mode `--reload`, yang memulai subprocess baru tanpa mewarisi working directory. Tanpa `PYTHONPATH`, subprocess tidak bisa menemukan modul `api` dan akan crash dengan `ModuleNotFoundError: No module named 'api'`. Selalu set `PYTHONPATH` sebelum menjalankan uvicorn secara manual.
 
 ```bat
 # Terminal 1 — API server (dari folder Locus/)
@@ -159,18 +165,11 @@ Disarankan download model yang telah disediakan.
 
 ### Opsi 1: Download Trained Model (Rekomendasi)
 
-```bash
-https://drive.google.com/drive/folders/1ei9ulpXymL507Ht-ztsdrcRFIlUGxKV5?usp=sharing
-```
+[Download dnabert2_finetuned.pt via Google Drive](https://drive.google.com/drive/folders/1ei9ulpXymL507Ht-ztsdrcRFIlUGxKV5?usp=sharing)
 
 ### Opsi 2: Kaggle
 
-```bash
-# Dari root folder kd/
-# Output: notebooks/fine-tune-notebookipynb
-```
-
-1. Upload `notebooks/fine-tune-notebookipynb` ke [kaggle.com/code](https://kaggle.com/code)
+1. Upload `notebooks/fine-tune-notebook.ipynb` ke [kaggle.com/code](https://kaggle.com/code)
 2. Aktifkan GPU: **Settings > Accelerator > GPU T4 x2 atau P100**
 3. Jalankan semua cell (**Run All**)
 4. Unduh model dari tab **Output**
@@ -312,15 +311,15 @@ python scripts/run_pipeline.py
 
 **Strategi embedding (Feng et al., Nature Communications 2025):**
 
-Untuk SNV (Single Nucleotide Variant) pada sekuens 512 bp, perbedaan hanya 1 nukleotida menghasilkan `alt_emb - ref_emb ≈ 0`. Model yang hanya menerima sinyal mendekati nol akan collapse ke majority class. Strategi concat mengatasi ini:
+Untuk SNV (Single Nucleotide Variant) pada sekuens 512 bp, perbedaan hanya 1 nukleotida menghasilkan `alt_emb - ref_emb ≈ 0`. Model menggunakan sinyal diferensial ini sebagai representasi varian:
 
 ```
 ref_forward_sequence → DNABERT-2 → mean_pool → ref_emb  [768]
 alt_forward_sequence → DNABERT-2 → mean_pool → alt_emb  [768]
                                                     ↓
-                    concat[alt_emb || ref_emb || (alt_emb - ref_emb)]  [2304]
+                              diff_emb = alt_emb - ref_emb  [768]
                                                     ↓
-                            Linear(2304 → 512) → ReLU → Dropout(0.1)
+                            Linear(768 → 512) → ReLU → Dropout(0.1)
                                                     ↓
                                        Linear(512 → 2) → Benign / Pathogenic
 ```
@@ -361,7 +360,7 @@ Locus/
 │   │   ├── dataset.py              ← DNAVariantDataset (PyTorch Dataset)
 │   │   └── preprocessing.py        ← utilitas preprocessing sekuens
 │   ├── models/
-│   │   └── classifier.py           ← DNAVariantClassifier (DNABERT-2 + concat head)
+│   │   └── classifier.py           ← DNAVariantClassifier (DNABERT-2 + diff head)
 │   ├── agents/
 │   │   ├── sequence_analyst.py     ← GC content, motif, lokasi genomik
 │   │   ├── literature.py           ← ClinVar + PubMed via NCBI E-utilities
@@ -372,7 +371,8 @@ Locus/
 │   │   └── pipeline.py             ← LangGraph StateGraph
 │   └── utils/
 │       ├── clinvar_api.py          ← NCBI E-utilities wrapper
-│       └── pubmed_api.py           ← PubMed API wrapper
+│       ├── pubmed_api.py           ← PubMed API wrapper
+│       └── tavily_search.py        ← Tavily web search wrapper
 ├── api/
 │   ├── main.py                     ← FastAPI app + ML inference
 │   └── models.py                   ← Pydantic request/response schemas
